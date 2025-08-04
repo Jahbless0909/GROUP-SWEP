@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Event & Resource System</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- AOS CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts - Serif font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --secondary-color: #818cf8;
+            --background-color: #1a1a2e;
+            --card-background: rgba(35, 41, 70, 0.6); /* Slightly transparent for glassmorphism */
+            --text-color: #b8c1ec;
+            --heading-color: #fff;
+            --border-color: rgba(79, 70, 229, 0.4);
+            --shadow-color: rgba(0, 0, 0, 0.4);
+            --font-serif: 'Playfair Display', serif;
+            --font-sans: 'Roboto', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--background-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+
+        /* Landing Page Hero Section */
+        .hero-section {
+            height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background-color: var(--background-color);
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-content h1 {
+            font-family: var(--font-serif);
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--heading-color);
+        }
+
+        .hero-content p {
+            font-size: 1.25rem;
+            max-width: 600px;
+            margin: 1rem auto;
+        }
+        
+        /* Glassmorphism Water Effect Button */
+        .glass-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: white;
+            font-weight: 700;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .glass-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: scale(1.05);
+            color: white;
+        }
+
+        /* Carousel */
+        #hero-carousel {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .carousel-item img {
+            width: 100%;
+            height: 100vh;
+            object-fit: cover;
+        }
+
+        /* Main App Container */
+        .app-container {
+            display: none;
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+        }
+
+        .app-container.show {
+            display: block;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: var(--card-background);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .navbar-brand {
+            font-family: var(--font-serif);
+            color: var(--heading-color);
+            font-size: 1.8rem;
+        }
+
+        .nav-link {
+            color: var(--text-color);
+            transition: color 0.3s ease;
+        }
+
+        .nav-link.active, .nav-link:hover {
+            color: var(--primary-color);
+        }
+
+        /* Card and Lists */
+        .card {
+            background-color: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px var(--shadow-color);
+        }
+
+        /* Custom Modal */
+        .modal-content {
+            background-color: var(--card-background);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+        }
+
+        .modal-header, .modal-footer {
+            border-color: var(--border-color);
+        }
+
+        /* Status Badges */
+        .badge {
+            font-family: var(--font-sans);
+            font-weight: 700;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #2e3557;
+            padding: 1rem 0;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+            width: 100%;
+        }
+
+        .footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Landing Page Hero Section -->
+    <section id="hero-section" class="hero-section">
+        <div id="hero-carousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="https://placehold.co/1920x1080/4f46e5/fff?text=Event+Planning" class="d-block w-100" alt="Event Planning">
+                </div>
+                <div class="carousel-item">
+                    <img src="https://placehold.co/1920x1080/818cf8/fff?text=Resource+Management" class="d-block w-100" alt="Resource Management">
+                </div>
+                <div class="carousel-item">
+                    <img src="https://placehold.co/1920x1080/4f46e5/fff?text=Venue+Booking" class="d-block w-100" alt="Venue Booking">
+                </div>
+            </div>
+        </div>
+        <div class="container hero-content" data-aos="fade-up">
+            <h1 class="display-3 fw-bold">Campus Event & Resource System</h1>
+            <p class="lead">Effortlessly plan and manage events, venues, and resources for your campus community. Your one-stop solution for seamless organization.</p>
+            <button id="cta-button" class="btn glass-btn mt-4" data-aos="zoom-in" data-aos-delay="1000">Start Booking Now</button>
+        </div>
+    </section>
+
+    <!-- Main Application Container -->
+    <div id="app-container" class="container-fluid app-container">
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg sticky-top">
+            <div class="container">
+                <a class="navbar-brand" href="#">Booking System</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <i class="fas fa-bars" style="color: var(--text-color);"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#" data-section="booking-section">
+                                <i class="fas fa-calendar-plus"></i> Book
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-section="events-section">
+                                <i class="fas fa-calendar-alt"></i> Events
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-section="resources-section">
+                                <i class="fas fa-list-ul"></i> Resources
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-section="admin-section">
+                                <i class="fas fa-user-cog"></i> Admin
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Sections -->
+        <main class="container py-5">
+            <!-- Booking Section -->
+            <section id="booking-section" class="section active" data-aos="fade-up">
+                <h2 class="display-6 fw-bold text-center mb-4">Book an Event</h2>
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="card p-4">
+                            <form id="booking-form">
+                                <div class="mb-3">
+                                    <label for="event-title" class="form-label">Event Title</label>
+                                    <input type="text" class="form-control" id="event-title" required>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="event-date" class="form-label">Date</label>
+                                        <input type="date" class="form-control" id="event-date" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="event-time-start" class="form-label">Start Time</label>
+                                        <input type="time" class="form-control" id="event-time-start" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="event-time-end" class="form-label">End Time</label>
+                                        <input type="time" class="form-control" id="event-time-end" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="event-venue" class="form-label">Venue</label>
+                                        <select id="event-venue" class="form-select" required></select>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="event-resources" class="form-label">Resources (Hold Ctrl/Cmd to select multiple)</label>
+                                    <select id="event-resources" class="form-select" multiple></select>
+                                </div>
+                                <button type="submit" class="btn glass-btn w-100">Submit Booking</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Events Section -->
+            <section id="events-section" class="section" data-aos="fade-up">
+                <h2 class="display-6 fw-bold text-center mb-4">Upcoming Events</h2>
+                <div id="events-list" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                    <!-- Events will be dynamically inserted here -->
+                </div>
+            </section>
+
+            <!-- Resources Section -->
+            <section id="resources-section" class="section" data-aos="fade-up">
+                <h2 class="display-6 fw-bold text-center mb-4">Available Resources</h2>
+                <div id="resources-list" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                    <!-- Resources will be dynamically inserted here -->
+                </div>
+            </section>
+            
+            <!-- Admin Section -->
+            <section id="admin-section" class="section" data-aos="fade-up">
+                <h2 class="display-6 fw-bold text-center mb-4">Admin Dashboard</h2>
+                <div class="card p-4">
+                    <p class="text-white-50">This section is for administrators to manage venues and resources. CRUD operations would be implemented here, connecting to the Firebase backend. For now, this shows a placeholder UI.</p>
+                    <button class="btn glass-btn w-100 mt-3">Manage Venues & Resources</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal for messages -->
+    <div class="modal fade" id="message-modal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabel"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="modal-message"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer Section -->
+    <footer class="footer">
+        Developed by <a href="https://praixtech.netlify.app" target="_blank">Praixtech</a>
+    </footer>
+
+    <!-- Bootstrap, AOS, and Custom JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            AOS.init();
+            
+            // --- Mock Data (To be replaced by Firebase later) ---
+            let mockEvents = [
+                {
+                    id: '1',
+                    title: 'Student Orientation',
+                    date: '2025-08-10',
+                    startTime: '09:00',
+                    endTime: '11:00',
+                    bookedVenue: 'Main Hall',
+                    bookedResources: ['Projector A (1)', 'Chairs (100)'],
+                    clubId: 'tech-club',
+                    userId: 'user1'
+                },
+                {
+                    id: '2',
+                    title: 'Club Meeting',
+                    date: '2025-08-15',
+                    startTime: '14:00',
+                    endTime: '15:00',
+                    bookedVenue: 'Conference Room 1',
+                    bookedResources: ['Whiteboard (1)'],
+                    clubId: 'art-club',
+                    userId: 'user2'
+                }
+            ];
+
+            const mockResources = [
+                { id: 'v1', name: 'Main Hall', type: 'venue', isBookable: true, quantity: 1 },
+                { id: 'v2', name: 'Conference Room 1', type: 'venue', isBookable: true, quantity: 1 },
+                { id: 'r1', name: 'Projector A', type: 'equipment', isBookable: true, quantity: 1 },
+                { id: 'r2', name: 'Whiteboard', type: 'equipment', isBookable: true, quantity: 1 },
+                { id: 'r3', name: 'Chairs', type: 'equipment', isBookable: true, quantity: 200 }
+            ];
+
+            // --- DOM Elements & Bootstrap Modal ---
+            const heroSection = document.getElementById('hero-section');
+            const ctaButton = document.getElementById('cta-button');
+            const appContainer = document.getElementById('app-container');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('.section');
+            const bookingForm = document.getElementById('booking-form');
+            const eventVenueSelect = document.getElementById('event-venue');
+            const eventResourcesSelect = document.getElementById('event-resources');
+            const eventsListContainer = document.getElementById('events-list');
+            const resourcesListContainer = document.getElementById('resources-list');
+            
+            const messageModal = new bootstrap.Modal(document.getElementById('message-modal'));
+            const modalTitleEl = document.getElementById('modalLabel');
+            const modalMessageEl = document.getElementById('modal-message');
+
+            /**
+             * Function to show the Bootstrap modal.
+             * @param {string} title The modal title.
+             * @param {string} message The modal message.
+             */
+            function showModal(title, message) {
+                modalTitleEl.textContent = title;
+                modalMessageEl.textContent = message;
+                messageModal.show();
+            }
+
+            /**
+             * Initializes the booking form dropdowns with mock data.
+             */
+            function initializeFormOptions() {
+                eventVenueSelect.innerHTML = '<option value="" disabled selected>Select a Venue</option>';
+                eventResourcesSelect.innerHTML = '';
+
+                const venues = mockResources.filter(r => r.type === 'venue');
+                venues.forEach(venue => {
+                    const option = document.createElement('option');
+                    option.value = venue.name;
+                    option.textContent = venue.name;
+                    eventVenueSelect.appendChild(option);
+                });
+
+                const resources = mockResources.filter(r => r.type === 'equipment');
+                resources.forEach(resource => {
+                    const option = document.createElement('option');
+                    option.value = `${resource.name} (${resource.quantity})`;
+                    option.textContent = `${resource.name} (Qty: ${resource.quantity})`;
+                    eventResourcesSelect.appendChild(option);
+                });
+            }
+
+            /**
+             * Renders the list of upcoming events.
+             * This function would be updated to fetch data from Firebase.
+             */
+            function renderEvents() {
+                eventsListContainer.innerHTML = '';
+                if (mockEvents.length === 0) {
+                    eventsListContainer.innerHTML = '<p class="text-center">No upcoming events.</p>';
+                    return;
+                }
+
+                mockEvents.forEach(event => {
+                    const eventCard = document.createElement('div');
+                    eventCard.classList.add('col');
+                    eventCard.innerHTML = `
+                        <div class="card p-4">
+                            <h5 class="card-title fw-bold text-primary">${event.title}</h5>
+                            <p class="card-text mb-1"><strong>Date:</strong> ${event.date}</p>
+                            <p class="card-text mb-1"><strong>Time:</strong> ${event.startTime} - ${event.endTime}</p>
+                            <p class="card-text mb-1"><strong>Venue:</strong> ${event.bookedVenue}</p>
+                            <p class="card-text"><strong>Resources:</strong> ${event.bookedResources.join(', ')}</p>
+                        </div>
+                    `;
+                    eventsListContainer.appendChild(eventCard);
+                });
+            }
+
+            /**
+             * Renders the list of resources.
+             * This function would check Firebase for real-time availability.
+             */
+            function renderResources() {
+                resourcesListContainer.innerHTML = '';
+                mockResources.forEach(resource => {
+                    // This is a simplified availability check. A real system would query the database.
+                    const isBooked = mockEvents.some(event => {
+                        return event.bookedVenue === resource.name || event.bookedResources.includes(`${resource.name} (${resource.quantity})`);
+                    });
+                    
+                    const statusClass = isBooked ? 'bg-danger' : 'bg-success';
+                    const statusText = isBooked ? 'Unavailable' : 'Available';
+
+                    const resourceCard = document.createElement('div');
+                    resourceCard.classList.add('col');
+                    resourceCard.innerHTML = `
+                        <div class="card p-4">
+                            <h5 class="card-title">${resource.name}</h5>
+                            <p class="card-text mb-1"><strong>Type:</strong> ${resource.type}</p>
+                            <p class="card-text mb-1"><strong>Quantity:</strong> ${resource.quantity > 1 ? resource.quantity : 'N/A'}</p>
+                            <span class="badge ${statusClass}">${statusText}</span>
+                        </div>
+                    `;
+                    resourcesListContainer.appendChild(resourceCard);
+                });
+            }
+            
+            /**
+             * Handles the booking form submission.
+             * This is where a real-time availability check and Firestore write operation would happen.
+             */
+            function handleBookingFormSubmit(e) {
+                e.preventDefault();
+                
+                // Get form values
+                const title = document.getElementById('event-title').value;
+                const date = document.getElementById('event-date').value;
+                const startTime = document.getElementById('event-time-start').value;
+                const endTime = document.getElementById('event-time-end').value;
+                const venue = eventVenueSelect.value;
+                const selectedResources = Array.from(eventResourcesSelect.selectedOptions).map(option => option.value);
+
+                // Simple validation check
+                if (!title || !date || !startTime || !endTime || !venue) {
+                    showModal('Booking Failed', 'Please fill in all required fields.');
+                    return;
+                }
+
+                // Simulate an availability check for the venue and resources
+                const isConflict = mockEvents.some(event => {
+                    const newBookingStart = new Date(`${date}T${startTime}`);
+                    const newBookingEnd = new Date(`${date}T${endTime}`);
+                    const existingEventStart = new Date(`${event.date}T${event.startTime}`);
+                    const existingEventEnd = new Date(`${event.date}T${event.endTime}`);
+
+                    const venueConflict = (event.bookedVenue === venue) &&
+                                          (newBookingStart < existingEventEnd && newBookingEnd > existingEventStart);
+                    
+                    const resourceConflict = selectedResources.some(res => event.bookedResources.includes(res)) &&
+                                             (newBookingStart < existingEventEnd && newBookingEnd > existingEventStart);
+
+                    return venueConflict || resourceConflict;
+                });
+
+                if (isConflict) {
+                    showModal('Booking Failed', 'The selected venue or resources are not available at the specified time.');
+                } else {
+                    // In a real app, you would perform a Firestore write operation here.
+                    const newEvent = {
+                        id: (mockEvents.length + 1).toString(),
+                        title,
+                        date,
+                        startTime,
+                        endTime,
+                        bookedVenue: venue,
+                        bookedResources: selectedResources,
+                        clubId: 'mock-club',
+                        userId: 'mock-user'
+                    };
+                    mockEvents.push(newEvent); // Add to mock data
+                    bookingForm.reset();
+                    renderEvents();
+                    renderResources();
+                    showModal('Success!', 'Your event has been successfully booked.');
+                }
+            }
+            
+            // --- Event Listeners ---
+            
+            // Handle CTA button click to transition from landing page to app
+            ctaButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                heroSection.style.display = 'none';
+                appContainer.classList.add('show');
+            });
+            
+            // Handle navigation between sections
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetSectionId = e.target.dataset.section;
+
+                    // Remove active class from all nav links and sections
+                    navLinks.forEach(nav => nav.classList.remove('active'));
+                    sections.forEach(sec => sec.classList.remove('active'));
+
+                    // Add active class to the clicked link and its corresponding section
+                    e.target.classList.add('active');
+                    document.getElementById(targetSectionId).classList.add('active');
+                });
+            });
+
+            // Handle booking form submission
+            bookingForm.addEventListener('submit', handleBookingFormSubmit);
+            
+            // --- Initial Setup ---
+            initializeFormOptions();
+            renderEvents();
+            renderResources();
+        });
+    </script>
+</body>
+</html>
